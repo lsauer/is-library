@@ -27,6 +27,7 @@ Primarily, 'is' should contain methods which return boolean values, but features
 TODO: check if all references are OK for GC
 Happy Hacking!
 (c) 2011 Lorenz Sauer, MIT License
+(c) 'Type' function by Angus Croll
 */
 is = (function(){
   return {
@@ -61,16 +62,17 @@ is = (function(){
     Error :           function(e,ret){ if( this.Debug){ throw e; } else{ console.error(e); } return typeof ret !== 'undefined' ? ret : e;},
     Warn :            function(e,ret){ if( this.Debug){ console.warn(e); } return typeof ret !== 'undefined' ? ret : e;},
     /* Types */
-    Array :        function(a)   { return a instanceof Array; },
-    ObjSame:     function(a,b) { return a.constructor === b.constructor; }, //compares left to right object
-    String :       function(s)   { return typeof s === 'string'; },
-    Object :       function(o)   { return o !== null && o instanceof Object; },
-    Empty :        function(o)   { if( typeof o === 'undefined') return undefined; else return !Boolean(o); }, 
-    Void :        function(o)   { return !Boolean(o); }, //less strict than Empty
-    OfValue :      function(o)   { return Boolean(o); }, //less strict than Empty
-    IsSet :        function(o)   { return typeof o !== 'undefined' && Boolean(o); },
-    Number :       function(n)   { if( typeof n === 'undefined') return undefined; if( typeof n === 'number' && n !== Number.NaN && Math.abs(n) !== Infinity ) return true; else false; },
-    Between :     function(n,a,b) { n = parseFloat(n); if(! this.Number(n)) return undefined; return a<n && n<b; },//in JS a<n<b will eval to a<n || n<b; e.g. 5<4<10 -> true
-    NoElements :      function(a) { for(var i=cnt=0; i<a.length;cnt+= !this.Void(a[i++]) ); return cnt;}, //returns array length, measured by non-empty elements
+    Type :            function(o) { return ({}).toString.call(o).match(/\s([a-zA-Z]+)/)[1].toLowerCase();},
+    Array :           function(a)   { return a instanceof Array; },
+    ObjSame:          function(a,b) { return a.constructor === b.constructor; }, //compares left to right object
+    String :          function(s)   { return typeof s === 'string'; },
+    Object :          function(o)   { return o !== null && o instanceof Object; },
+    Empty :           function(o)   { if( typeof o === 'undefined') return undefined; else return !Boolean(o); }, 
+    Void :            function(o)   { return !Boolean(o); }, //less strict than Empty
+    OfValue :         function(o)   { return Boolean(o); }, //less strict than Empty
+    IsSet :           function(o)   { return typeof o !== 'undefined' && Boolean(o); },
+    Number :          function(n)   { if( typeof n === 'undefined') return undefined; if( typeof n === 'number' && n !== Number.NaN && Math.abs(n) !== Infinity ) return true; else false; },
+    Between :         function(n,a,b) { n = parseFloat(n); if(! this.Number(n)) return undefined; return a<n && n<b; },//in JS a<n<b will eval to a<n || n<b; e.g. 5<4<10 -> true
+    NoElements :      function(a)   { for(var i=cnt=0; i<a.length;cnt+= !this.Void(a[i++]) ); return cnt;}, //returns array length, measured by non-empty elements
   }
 })();
