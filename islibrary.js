@@ -74,5 +74,21 @@ is = (function(){
     Number :          function(n)   { if( typeof n === 'undefined') return undefined; if( typeof n === 'number' && n !== Number.NaN && Math.abs(n) !== Infinity ) return true; else false; },
     Between :         function(n,a,b) { n = parseFloat(n); if(! this.Number(n)) return undefined; return a<n && n<b; },//in JS a<n<b will eval to a<n || n<b; e.g. 5<4<10 -> true
     NoElements :      function(a)   { for(var i=cnt=0; i<a.length;cnt+= !this.Void(a[i++]) ); return cnt;}, //returns array length, measured by non-empty elements
+    // takes an xml-string and return a DOM object if valid xml otherwise false; assumes a modern browser w. DOMParser
+    XMLString :       function(s)   { var dom = null;
+                                    if ( s && s.constructor === String ){
+                                      if( this.IE ){
+                                          dom = new ActiveXObject("MSXML2.DOMDocument");
+                                          dom.async = false;
+                                          dom = dom.loadXML(s);
+                                      } else{
+                                          dom = new DOMParser();
+                                          dom = dom.parseFromString(s, "text/xml");
+                                      }
+                                    } 
+                                    if(!dom) return false;
+                                    else return dom;
+                    },
   }
 })();
+
