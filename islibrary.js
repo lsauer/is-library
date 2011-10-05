@@ -1,4 +1,4 @@
-// Copyright (C) 2011 by Lorenz Sauer
+// Copyright (C) 2011 by lo sauer
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,18 +18,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// key: IUPAC Name , value: CAS-Number, sorted: asort
-
 /**
-'is' is a lightweight JS library with useful validations and checks providing a good starting point for any script
-It will remain >3kB 
-Primarily, 'is' should contain methods which return boolean values, but features some additional functions
-TODO: check if all references are OK for GC
+author: lo sauer
+description:  'is' is a lightweight javascript library with useful validations and check methods which
+              provide a good starting point for any other cross-browser scripting logic
+              One of its premises is to remain >10kB (for the minified version)
+task: Primarily, 'is' should contain methods which return boolean values, but also some additional 'core' functions
+TODO: check if all references are OK for garbage collection / unit checking
 Happy Hacking!
-(c) 2011 Lorenz Sauer, MIT License
+(c) 2011 lo sauer, MIT License
 (c) 'Type' function by Angus Croll
 */
-is = (function(){
+var is = (function(){
   return {
     xhrStatus : {},
     Debug : false,    //<boolean> e.g. allow failing by throwing errors, logging...
@@ -74,16 +74,11 @@ is = (function(){
     Number :          function(n)   { if( typeof n === 'undefined') return undefined; if( typeof n === 'number' && n !== Number.NaN && Math.abs(n) !== Infinity ) return true; else false; },
     Between :         function(n,a,b) { n = parseFloat(n); if(! this.Number(n)) return undefined; return a<n && n<b; },//in JS a<n<b will eval to a<n || n<b; e.g. 5<4<10 -> true
     NoElements :      function(a)   { for(var i=cnt=0; i<a.length;cnt+= !this.Void(a[i++]) ); return cnt;}, //returns array length, measured by non-empty elements
-    // takes an xml-string and return a DOM object if valid xml otherwise false; assumes a modern browser w. DOMParser
+    // takes an xml-string and returns a DOM object if valid xml is passed, otherwise false; assumes a modern browser w. DOMParser
     XMLString :       function(s)   { var dom = null;
                                     if ( s && s.constructor === String ){
-                                      if( this.IE ){
-                                          dom = new ActiveXObject("MSXML2.DOMDocument");
-                                          dom.async = false;
-                                          dom = dom.loadXML(s);
-                                      } else{
-                                          dom = new DOMParser();
-                                          dom = dom.parseFromString(s, "text/xml");
+                                      if( this.IE ){ dom = new ActiveXObject("MSXML2.DOMDocument"); dom.async = false;  dom = dom.loadXML(s);
+                                      } else{ dom = new DOMParser(); dom = dom.parseFromString(s, "text/xml");
                                       }
                                     } 
                                     if(!dom) return false;
@@ -92,3 +87,4 @@ is = (function(){
   }
 })();
 
+navigator.is = window.is;
