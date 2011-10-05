@@ -26,7 +26,9 @@ description:  'is' is a lightweight javascript library with useful validations a
 task: Primarily, 'is' should contain methods which return boolean values, but also some additional 'core' functions
 TODO: check if all references are OK for garbage collection / unit checking
 implement connectivity status e.g. for an animated connection status button
-Happy Hacking!
+
+...perhaps islib should get two siblings, 'in' and 'into'...
+      Happy Hacking!
 (c) 2011 lo sauer, MIT License
 (c) 'Type' function by Angus Croll
 */
@@ -62,16 +64,20 @@ var is = (function(){
     get newXhrObj()   { if( typeof XMLHttpRequest !== 'undefined') return new XMLHttpRequest; else for(var i=3; i--;){ try{ var xhttp = new ActiveXObject( this.XMLHTTP[i] ); return  xhttp; }catch(e){ is.Warn(e); } } },
     get ConnStatus()  { /*TODO*/},
     set Exit(e)       { throw e; }, //quits the script
+    //passthrough Error function e.g. scenario in a function ....return is.Error(e, false); -> processes the error and returns false
     Error :           function(e,ret){ if( this.Debug){ throw e; } else{ console.error(e); } return typeof ret !== 'undefined' ? ret : e;},
     Warn :            function(e,ret){ if( this.Debug){ console.warn(e); } return typeof ret !== 'undefined' ? ret : e;},
     /* Types */
     Type :            function(o) { return ({}).toString.call(o).match(/\s([a-zA-Z]+)/)[1].toLowerCase();},
-    Array :           function(a)   { return a instanceof Array; },
+    Array :           function(a)   { return a && (a instanceof Array|| typeof a == "array"); },
     ObjSame:          function(a,b) { return a.constructor === b.constructor; }, //compares left to right object
     String :          function(s)   { return typeof s === 'string'; },
     Object :          function(o)   { return o !== null && o instanceof Object; },
     Empty :           function(o)   { if( typeof o === 'undefined') return undefined; else return !Boolean(o); }, 
     Void :            function(o)   { return !Boolean(o); }, //less strict than Empty
+    'Function' :      function(o)   { return Object.prototype.toString(x)==="[object Function]"; }, //checks for function via 'object' tostring method
+    Native :          function(o)   { return (o && !this.Function(o) && /\{\[native code\]\}/i.test(String(o)));}, //Checks for native functions
+    Extend :          function (o, n, fn) { if(this.Object(o) ) o.__proto__[n] = fn; else o.prototype[n] = fn; return o; }, //o:object to be extended, n:name, fn: func to be loaded onto the proto-chain
     OfValue :         function(o)   { return Boolean(o); }, //less strict than Empty
     IsSet :           function(o)   { return typeof o !== 'undefined' && Boolean(o); },
     Number :          function(n)   { if( typeof n === 'undefined') return undefined; if( typeof n === 'number' && n !== Number.NaN && Math.abs(n) !== Infinity ) return true; else false; },
