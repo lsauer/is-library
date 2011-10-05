@@ -57,7 +57,8 @@ var is = (function(){
     get XHRActiveX()  { return this.IE && window.location.protocol === 'file:'; }, //check in IE 7, to overcome some bugs
     get QuirksMode()  { return document.compatMode === 'BackCompat'},
     set XHRStatus(o)  { this.xhrStatus = o;}, //204:OK, 304 cache, 1223 IE bug ( 204 translated to 1223?)
-    get XHRStatusOK(o){ if(undefined == o) var o = this.xhrStatus; return (o.status >= 200 && o.status < 300) || o.status == 304 || o.status == 1223 || false; },
+    get XHRStatus()   { return this.XHRStatusOK(this.xhrStatus); },
+    XHRStatusOK :     function(o){ if(undefined == o) var o = this.xhrStatus; return (o.status >= 200 && o.status < 300) || o.status == 304 || o.status == 1223 || false; },
     get newXhrObj()   { if( typeof XMLHttpRequest !== 'undefined') return new XMLHttpRequest; else for(var i=3; i--;){ try{ var xhttp = new ActiveXObject( this.XMLHTTP[i] ); return  xhttp; }catch(e){ is.Warn(e); } } },
     get ConnStatus()  { /*TODO*/},
     set Exit(e)       { throw e; }, //quits the script

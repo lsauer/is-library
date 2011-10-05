@@ -26,7 +26,7 @@ function XHR(url){
   xhr.open('GET', url, false); //false...ynchronous mode, i.e. non- AJAX
   try{
     xhr.send(null);
-    if( is.XHRStatus = xhr && is.XHRStatusOK ) {
+    if( is.XHRStatus = xhr && is.XHRStatus ) { //or: if(is.XHRStatusOK(xhr))...
       var e = Error("Could not load:" + uri + "|status:" + xhr.status);
       e.status = xhr.status;
       e.responseText = xhr.responseText;
