@@ -25,13 +25,14 @@ description:  'is' is a lightweight javascript library with useful validations a
               One of its premises is to remain >10kB (for the minified version)
 task: Primarily, 'is' should contain methods which return boolean values, but also some additional 'core' functions
 TODO: check if all references are OK for garbage collection / unit checking
+implement connectivity status e.g. for an animated connection status button
 Happy Hacking!
 (c) 2011 lo sauer, MIT License
 (c) 'Type' function by Angus Croll
 */
 var is = (function(){
   return {
-    xhrStatus : {},
+    xhrStatus : {},    //holds the status of the most recent XHR call
     Debug : false,    //<boolean> e.g. allow failing by throwing errors, logging...
     XMLHTTP :         [ 'Msxml2.XMLHTTP.4.0', 'Msxml2.XMLHTTP', 'Microsoft.XMLHTTP' ], 
     get AdobeAIR()    { return (navigator.userAgent.indexOf("AdobeAIR") >= 0) ? true : false; },
@@ -56,8 +57,9 @@ var is = (function(){
     get XHRActiveX()  { return this.IE && window.location.protocol === 'file:'; }, //check in IE 7, to overcome some bugs
     get QuirksMode()  { return document.compatMode === 'BackCompat'},
     set XHRStatus(o)  { this.xhrStatus = o;}, //204:OK, 304 cache, 1223 IE bug ( 204 translated to 1223?)
-    get XHRStatusOK() { var o = this.xhrStatus; return (o.status >= 200 && o.status < 300) || o.status == 304 || o.status == 1223 || false; },
+    get XHRStatusOK(o){ if(undefined == o) var o = this.xhrStatus; return (o.status >= 200 && o.status < 300) || o.status == 304 || o.status == 1223 || false; },
     get newXhrObj()   { if( typeof XMLHttpRequest !== 'undefined') return new XMLHttpRequest; else for(var i=3; i--;){ try{ var xhttp = new ActiveXObject( this.XMLHTTP[i] ); return  xhttp; }catch(e){ is.Warn(e); } } },
+    get ConnStatus()  { /*TODO*/},
     set Exit(e)       { throw e; }, //quits the script
     Error :           function(e,ret){ if( this.Debug){ throw e; } else{ console.error(e); } return typeof ret !== 'undefined' ? ret : e;},
     Warn :            function(e,ret){ if( this.Debug){ console.warn(e); } return typeof ret !== 'undefined' ? ret : e;},
