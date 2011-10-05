@@ -78,6 +78,8 @@ var is = (function(){
     'Function' :      function(o)   { return Object.prototype.toString(x)==="[object Function]"; }, //checks for function via 'object' tostring method
     Native :          function(o)   { return (o && !this.Function(o) && /\{\[native code\]\}/i.test(String(o)));}, //Checks for native functions
     Extend :          function (o, n, fn) { if(this.Object(o) ) o.__proto__[n] = fn; else o.prototype[n] = fn; return o; }, //o:object to be extended, n:name, fn: func to be loaded onto the proto-chain
+    //Returns a function which exectues in the scope defined by self; supply a variable list of arguments after fn e.g. (self, fn, arg1....)
+    BoundFunc :       function(self, fn){ return function(){ var f = fn.constructor === String ? (self||window)[fn] : fn; return f.apply(self || this, Array.apply(null,arguments).slice(2));};},    
     OfValue :         function(o)   { return Boolean(o); }, //less strict than Empty
     IsSet :           function(o)   { return typeof o !== 'undefined' && Boolean(o); },
     Number :          function(n)   { if( typeof n === 'undefined') return undefined; if( typeof n === 'number' && n !== Number.NaN && Math.abs(n) !== Infinity ) return true; else false; },
