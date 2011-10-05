@@ -9,17 +9,18 @@ x.length
 is.NoElements(x) == 1 ? "x has one non-empty Element" : '';
  
 
-if( navigator.is.Chrome ) {
+if( navigator.is.Chrome ) {   //or: if(is.Chrome)
   console.log("I am neither Mac nor PC, for I am Chrome!");
 }
-is.XHRStatusOK = {status : 204} && is.XHRStatusOK
+//status test
+is.XHRStatus = {status : 204} && is.XHRStatus
 //returns:
 //>>> true
-is.XHRStatusOK = {status : 300} && is.XHRStatusOK
+is.XHRStatus = {status : 300} && is.XHRStatus
 //returns:
 //>>> false
 
-var url = "http://xhr2.blogspot.com";
+var url = "http://lsauer.com";
 var content = XHR(url);
 function XHR(url){
   var xhr = is.newXhrObj;//new XMLHttpRequest()
