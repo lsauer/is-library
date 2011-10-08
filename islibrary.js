@@ -27,7 +27,9 @@ task: Primarily, 'is' should contain methods which return boolean values, but al
 TODO: check if all references are OK for garbage collection / unit checking
 implement connectivity status e.g. for an animated connection status button
 
-...perhaps islib should get two siblings, 'in' and 'into'...
+...perhaps islib should get two siblings, 'in' and 'to'...
+upd. 08/10/'11: eventually there will be two objects: islib and tolib
+
       Happy Hacking!
 (c) 2011 lo sauer, MIT License
 (c) 'Type' function by Angus Croll
@@ -81,12 +83,14 @@ var is = (function(){
     //Returns a function which exectues in the scope defined by self; supply a variable list of arguments after fn e.g. (self, fn, arg1....)
     BoundFunc :       function(self, fn){ return function(){ var f = fn.constructor === String ? (self||window)[fn] : fn; return f.apply(self || this, Array.apply(null,arguments).slice(2));};},    
     OfValue :         function(o)   { return Boolean(o); }, //less strict than Empty
-    IsSet :           function(o)   { return typeof o !== 'undefined' && Boolean(o); },
+    Set :           function(o)   { return typeof o !== 'undefined' && Boolean(o); },
     Number :          function(n)   { if( typeof n === 'undefined') return undefined; if( typeof n === 'number' && n !== Number.NaN && Math.abs(n) !== Infinity ) return true; else false; },
     Between :         function(n,a,b) { n = parseFloat(n); if(! this.Number(n)) return undefined; return a<n && n<b; },//in JS a<n<b will eval to a<n || n<b; e.g. 5<4<10 -> true
     NoElements :      function(a)   { for(var i=cnt=0; i<a.length;cnt+= !this.Void(a[i++]) ); return cnt;}, //returns array length, measured by non-empty elements
+    //----------'to'-lib--------//
     Basename :        function(s)   { if(undefined===s) s = window.location.href; return s.substr(0, s.lastIndexOf('/')+1)},
     Filename :        function(s)   { if(undefined===s) s = window.location.href; return s.substr(s.lastIndexOf('/')+1)},
+    Anonymous :       function(fn)  { return fn.constructor === Function && fn.name === ''; },
     //PHP's trim function; chs: provide an arbitrary trim character list
     Trim :            function(s, chs){ if(!chs) return this.valueOf().trim(); var restr = '['+s.split('').join('|')+']*'; return this.valueOf().replace(RegExp('^'+restr+'|'+restr+'$','g'),'');},
     // takes an xml-string and returns a DOM object if valid xml is passed, otherwise false; assumes a modern browser w. DOMParser
@@ -99,7 +103,20 @@ var is = (function(){
                                     if(!dom) return false;
                                     else return dom;
                     },
-  }
+    //d...decimal,
+    //h...hexadecimal
+    //i....integer
+    //b...binary
+    //from http://lsauer.com/2011/09/javascript-binary-to-int-hex-decimal.html
+    d2h : function(d) { return d.toString(16); },
+    h2d : function(h) { return parseInt(h,16); },
+    d2b : function(d) { return d.toString(2); },
+    b2d : function(d) { return parseInt(d,2); },
+    itoa : String.fromCharCode, //see: http://lsauer.com/2011/08/javascript-itoa-atoi-prototype-convert.html
+    atoi : String.charCodeAt,
+    
+  };
 })();
+
 
 navigator.is = window.is;
