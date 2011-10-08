@@ -108,13 +108,16 @@ var is = (function(){
     //i....integer
     //b...binary
     //from http://lsauer.com/2011/09/javascript-binary-to-int-hex-decimal.html
-    d2h : function(d) { return d.toString(16); },
-    h2d : function(h) { return parseInt(h,16); },
-    d2b : function(d) { return d.toString(2); },
-    b2d : function(d) { return parseInt(d,2); },
-    itoa : String.fromCharCode, //see: http://lsauer.com/2011/08/javascript-itoa-atoi-prototype-convert.html
-    atoi : String.charCodeAt,
-    
+    d2h :           function(d) { return d.toString(16); },
+    h2d :           function(h) { return parseInt(h,16); },
+    d2b :           function(d) { return d.toString(2); },
+    b2d :           function(d) { return parseInt(d,2); },
+    itoa :          String.fromCharCode, //see: http://lsauer.com/2011/08/javascript-itoa-atoi-prototype-convert.html
+    atoi :          String.charCodeAt,
+    //RFC  rfc4122v4 via map
+    GUID :          function(DCE){ return (DCE?'{':'')+('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('').map( function(v){if(v in {'4':0,'-':0})return v; var i=Math.random()*16|0, c= v=='x' ? i : (i&3|8);  return c.toString(16);} ).join(''))+(DCE?'}':'')},
+    get Uuid()      {return this.GUID(); },
+
   };
 })();
 
