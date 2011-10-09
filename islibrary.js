@@ -117,7 +117,10 @@ var is = (function(){
     //RFC  rfc4122v4 via map
     GUID :          function(DCE){ return (DCE?'{':'')+('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('').map( function(v){if(v in {'4':0,'-':0})return v; var i=Math.random()*16|0, c= v=='x' ? i : (i&3|8);  return c.toString(16);} ).join(''))+(DCE?'}':'')},
     get Uuid()      {return this.GUID(); },
-
+    //returns the name of the current function; returns false if the function is nameless but not ""
+    //e.g. function myfn(){return is.NameFunc}; myfn() -> "myfn"
+    get NameFunc()  {var fn = arguments.callee.caller; return this.Anonymous(fn) ? false : arguments.callee.caller.name; },  
+    
   };
 })();
 
