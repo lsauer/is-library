@@ -29,6 +29,11 @@ implement connectivity status e.g. for an animated connection status button
 
 ...perhaps islib should get two siblings, 'in' and 'to'...
 upd. 08/10/'11: eventually there will be two objects: islib and tolib
+upd. 09/10/'11: for now various functions are packed into, some of which may be removed at a later point
+cleaning and rewriting to make the code smaller will start at version .5
+
+
+current version v.3 - 09/10/11
 
       Happy Hacking!
 (c) 2011 lo sauer, MIT License
@@ -67,7 +72,7 @@ var is = (function(){
     get ConnStatus()  { /*TODO*/},
     set Exit(e)       { throw e; }, //quits the script
     //passthrough Error function e.g. scenario in a function ....return is.Error(e, false); -> processes the error and returns false
-    Error :           function(e,ret){ if( this.Debug){ throw e; } else{ console.error(e); } return typeof ret !== 'undefined' ? ret : e;},
+    Error :           function(e,ret){ if( this.Debug){ throw e; } else{ console.error ? console.error(e) : console.log('Error: '+e); } return typeof ret !== 'undefined' ? ret : e;},
     Warn :            function(e,ret){ if( this.Debug){ console.warn(e); } return typeof ret !== 'undefined' ? ret : e;},
     /* Types */
     Type :            function(o) { return ({}).toString.call(o).match(/\s([a-zA-Z]+)/)[1].toLowerCase();},
@@ -119,8 +124,13 @@ var is = (function(){
     get Uuid()      {return this.GUID(); },
     //returns the name of the current function; returns false if the function is nameless but not ""
     //e.g. function myfn(){return is.NameFunc}; myfn() -> "myfn"
-    get NameFunc()  {var fn = arguments.callee.caller; return this.Anonymous(fn) ? false : arguments.callee.caller.name; },  
-    
+    get NameFunc(levl)  {var n = levl||1; var fn = arguments.callee.caller; return this.Anonymous(fn) ? false : arguments.callee.caller.name; },  
+    //clone a primitive object by invoking the constructor directly; __proto__-chain is not copied; runtime parameters may change e.g. Date objects
+    clone :         function clone(o) { if (!o || !this.Object(o) ) return o; var onew = o.constructor(o.valueOf()); for (var attr in o) { if (o.hasOwnProperty(attr)) onew[attr] = o[attr]; } return onew;},  
+    //Pythonian range function in JS; best loaded to Number.prototype.range
+    // e.g. is.Range(0,10,2) -> [0, 2, 4, 6, 8, 10] ; is.Range(10,0,-2) -> [10, 8, 6, 4, 2, 0]
+    //3 arguments; start, stop, step
+    Range : function(st,so,sp){var args = arguments; args.length == 1 ? (start=0, stop=args[0], step=1) : (start=args[0], stop=args[1], step=args[2]==null? 1:args[2]); for (var i=start,a=[]; step>0 ? i<=stop:i>=stop; i+=step){a.push(i)} return a },
   };
 })();
 
