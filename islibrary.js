@@ -44,6 +44,7 @@ var is = (function(){
     xhrStatus : {},    //holds the status of the most recent XHR call
     Debug : false,    //<boolean> e.g. allow failing by throwing errors, logging...
     XMLHTTP :         [ 'Msxml2.XMLHTTP.4.0', 'Msxml2.XMLHTTP', 'Microsoft.XMLHTTP' ], 
+    get FileAccess()  { return typeof(window.File) !== 'undefined' && typeof(window.FileReader) === 'function' && typeof(window.FileList) !== 'undefined'; },
     get AdobeAIR()    { return (navigator.userAgent.indexOf("AdobeAIR") >= 0) ? true : false; },
     get Air()         { return this.AdobeAIR;},
     get Khtml()       { return (navigator.appVersion.indexOf("Konqueror") >= 0) ? parseFloat(navigator.appVersion) : false; },
@@ -72,7 +73,7 @@ var is = (function(){
     get ConnStatus()  { /*TODO*/},
     set Exit(e)       { throw e; }, //quits the script
     //passthrough Error function e.g. scenario in a function ....return is.Error(e, false); -> processes the error and returns false
-    Error :           function(e,ret){ if( this.Debug){ throw e; } else{ console.error ? console.error(e) : console.log('Error: '+e); } return typeof ret !== 'undefined' ? ret : e;},
+    Error :           function(e,ret){ if( this.Debug){ throw e; } else{ if(this.Object(e)){ for(i in e) console.error(e[i]);} else console.error ? console.error(e) : console.log('Error: '+e); } return typeof ret !== 'undefined' ? ret : e;},
     Warn :            function(e,ret){ if( this.Debug){ console.warn(e); } return typeof ret !== 'undefined' ? ret : e;},
     /* Types */
     Type :            function(o) { return ({}).toString.call(o).match(/\s([a-zA-Z]+)/)[1].toLowerCase();},
@@ -116,6 +117,7 @@ var is = (function(){
     d2h :           function(d) { return d.toString(16); },
     h2d :           function(h) { return parseInt(h,16); },
     d2b :           function(d) { return d.toString(2); },
+    d2h :           function(d) { return d.toString(16); },
     b2d :           function(d) { return parseInt(d,2); },
     itoa :          String.fromCharCode, //see: http://lsauer.com/2011/08/javascript-itoa-atoi-prototype-convert.html
     atoi :          String.charCodeAt,
