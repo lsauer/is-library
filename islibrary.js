@@ -45,6 +45,7 @@ var is = (function(){
     Debug : false,    //<boolean> e.g. allow failing by throwing errors, logging...
     XMLHTTP :         [ 'Msxml2.XMLHTTP.4.0', 'Msxml2.XMLHTTP', 'Microsoft.XMLHTTP' ], 
     get FileAccess()  { return typeof(window.File) !== 'undefined' && typeof(window.FileReader) === 'function' && typeof(window.FileList) !== 'undefined'; },
+    get DragSupport() { var el = document.getElementsByTagName('body')[0]; if(!el) return false; else return el.hasOwnProperty('ondragenter') && el.hasOwnProperty('ondragend'); },
     get AdobeAIR()    { return (navigator.userAgent.indexOf("AdobeAIR") >= 0) ? true : false; },
     get Air()         { return this.AdobeAIR;},
     get Khtml()       { return (navigator.appVersion.indexOf("Konqueror") >= 0) ? parseFloat(navigator.appVersion) : false; },
