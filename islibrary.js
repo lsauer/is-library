@@ -133,7 +133,9 @@ var is = (function(){
     //Pythonian range function in JS; best loaded to Number.prototype.range
     // e.g. is.Range(0,10,2) -> [0, 2, 4, 6, 8, 10] ; is.Range(10,0,-2) -> [10, 8, 6, 4, 2, 0]
     //3 arguments; start, stop, step
-    Range : function(st,so,sp){var args = arguments; args.length == 1 ? (start=0, stop=args[0], step=1) : (start=args[0], stop=args[1], step=args[2]==null? 1:args[2]); for (var i=start,a=[]; step>0 ? i<=stop:i>=stop; i+=step){a.push(i)} return a },
+    Range :         function(st,so,sp){var args = arguments; args.length == 1 ? (start=0, stop=args[0], step=1) : (start=args[0], stop=args[1], step=args[2]==null? 1:args[2]); for (var i=start,a=[]; step>0 ? i<=stop:i>=stop; i+=step){a.push(i)} return a },
+		Unique :        function(a){ return a.sort().filter( function(v,i,o){if(i>0 && v!==o[i-1]) return v;}); },
+
   };
 })();
 
