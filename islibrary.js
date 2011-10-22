@@ -77,7 +77,7 @@ var is = (function(){
     Error :           function(e,ret){ if( this.Debug){ throw e; } else{ if(this.Object(e)){ for(i in e) console.error(e[i]);} else console.error ? console.error(e) : console.log('Error: '+e); } return typeof ret !== 'undefined' ? ret : e;},
     Warn :            function(e,ret){ if( this.Debug){ console.warn(e); } return typeof ret !== 'undefined' ? ret : e;},
     /* Types */
-    Type :            function(o) { return ({}).toString.call(o).match(/\s([a-zA-Z]+)/)[1].toLowerCase();},
+    Type :            function(o)   { return ({}).toString.call(o).match(/\s([a-zA-Z]+)/)[1].toLowerCase();},
     Array :           function(a)   { return a && (a instanceof Array|| typeof a == "array"); },
     ObjSame:          function(a,b) { return a.constructor === b.constructor; }, //compares left to right object
     String :          function(s)   { return typeof s === 'string'; },
@@ -87,6 +87,7 @@ var is = (function(){
     'Function' :      function(o)   { return Object.prototype.toString(x)==="[object Function]"; }, //checks for function via 'object' tostring method
     Native :          function(o)   { return (o && !this.Function(o) && /\{\[native code\]\}/i.test(String(o)));}, //Checks for native functions
     Extend :          function (o, n, fn) { if(this.Object(o) ) o.__proto__[n] = fn; else o.prototype[n] = fn; return o; }, //o:object to be extended, n:name, fn: func to be loaded onto the proto-chain
+    XML :             function(o){ return !!o.ownerDocument && o.ownerDocument.documentElement.nodeName !== "HTML" || o.nodeType === 0x09 && o.documentElement.nodeName !== "HTML";},  //0x09...00001001
     //Returns a function which exectues in the scope defined by self; supply a variable list of arguments after fn e.g. (self, fn, arg1....)
     BoundFunc :       function(self, fn){ return function(){ var f = fn.constructor === String ? (self||window)[fn] : fn; return f.apply(self || this, Array.apply(null,arguments).slice(2));};},    
     OfValue :         function(o)   { return Boolean(o); }, //less strict than Empty
@@ -101,15 +102,7 @@ var is = (function(){
     //PHP's trim function; chs: provide an arbitrary trim character list
     Trim :            function(s, chs){ if(!chs) return this.valueOf().trim(); var restr = '['+s.split('').join('|')+']*'; return this.valueOf().replace(RegExp('^'+restr+'|'+restr+'$','g'),'');},
     // takes an xml-string and returns a DOM object if valid xml is passed, otherwise false; assumes a modern browser w. DOMParser
-    XMLString :       function(s)   { var dom = null;
-                                    if ( s && s.constructor === String ){
-                                      if( this.IE ){ dom = new ActiveXObject("MSXML2.DOMDocument"); dom.async = false;  dom = dom.loadXML(s);
-                                      } else{ dom = new DOMParser(); dom = dom.parseFromString(s, "text/xml");
-                                      }
-                                    } 
-                                    if(!dom) return false;
-                                    else return dom;
-                    },
+    XMLString :       function(s)   { var dom = false; if ( s && s.constructor === String ){ if( this.IE ){ dom = new ActiveXObject("MSXML2.DOMDocument"); dom.async = false;  dom = dom.loadXML(s); } else{ dom = new DOMParser(); dom = dom.parseFromString(s, "text/xml"); } }  return dom; },
     //d...decimal,
     //h...hexadecimal
     //i....integer
@@ -135,7 +128,6 @@ var is = (function(){
     //3 arguments; start, stop, step
     Range :         function(st,so,sp){var args = arguments; args.length == 1 ? (start=0, stop=args[0], step=1) : (start=args[0], stop=args[1], step=args[2]==null? 1:args[2]); for (var i=start,a=[]; step>0 ? i<=stop:i>=stop; i+=step){a.push(i)} return a },
 		Unique :        function(a){ return a.sort().filter( function(v,i,o){if(i>0 && v!==o[i-1]) return v;}); },
-
   };
 })();
 
