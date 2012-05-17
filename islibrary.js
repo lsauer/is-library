@@ -145,7 +145,7 @@ var _is = (function(){
     Keys:             function(o)   { var k=[]; for(var prop in o) {k.push(prop);} return k;},
     Values:           function(o)   { var v = []; for (var prop in o) { v.push(o[prop]) } return v; },    //e.g. can  convert Array-like objects (arguments,..) to Array
     toArray:          function(o)   { return this.Values(o); },    //e.g. can  convert Array-like objects (arguments,..) to Array
-    Basename :        function(s)   { if(undefined===s) s = window.location.href; return s.substr(0, s.lastIndexOf('/')+1)},
+    Basename :        function(s)   { if(undefined===s) s = window.location.href; return s.replace(/([/]{2,})/g,'/').substr(0, s.lastIndexOf('/')+1)},
     Filename :        function(s)   { if(undefined===s) s = window.location.href; return s.substr(s.lastIndexOf('/')+1)},
     FileExt :         function(s)   { return s.substr(s.lastIndexOf('.')+1)},
     Anonymous :       function(fn)  { return fn.constructor === Function && fn.name === ''; },
@@ -187,7 +187,7 @@ var _is = (function(){
     getFileOld :    function(url,m) { var x = this.newXhrObj; if(!x) return new Error('no XMLHttpRequest-Object');if (!(/^http/).test(url)) { /* no transfer protocol specified -> relative url?*/ url = window.location.href + '/' + url;} x.open(m||"GET", url, false); x.send(null); return x.responseText; },
     //getFile: @params url=fileurl,m=POST|GET,fn=callback function, fndirect=false|true -> direct fn binding,i.e. deal with status codes within the function
     //Exmpl. is.getFile("res/data/tags.json", function(){console.log(arguments);} )
-    getFile :       function(url,m,fn,fnm) {m=m||"GET";if(m.constructor !== String){fn=m; m="GET";}; var x = this.newXhrObj; if(!x) return new Error('no XMLHttpRequest-Object');if (!(/^http/).test(url)) { /* no transfer protocol specified -> relative url?*/ var l=window.location; url =l.origin+l.pathame+'/'+url;} x.open(m||"GET", url, !!fn);if(fn)x.onreadystatechange=fnm?fn:function(){if (x.readyState==4 && x.status==200){fn.apply(this, [x.responseText].concat(arguments));}}; x.send(null); return x.responseText; },
+    getFile :       function(url,m,fn,fnm) {m=m||"GET";if(m&&m.constructor !== String){fn=m; m="GET";}; var x = this.newXhrObj; if(!x) return new Error('no XMLHttpRequest-Object');if (!(/^http/).test(url)) { /* no transfer protocol specified -> relative url?*/var l=window.location; url =l.origin+l.pathname+url;} x.open(m||"GET", url, !!fn);if(fn)x.onreadystatechange=fnm?fn:function(){if (x.readyState==4 && x.status==200){fn.apply(this, [x.responseText].concat(arguments));}}; x.send(null); return x.responseText; },
     getDir :        function(url,m) { var x = this.newXhrObj; if(!x) return new Error('no XMLHttpRequest-Object'); x.open(m||"GET", url, false); x.send(null); return x; },
     file_get_contents:function(u,m) {return getFile(u,m);},
     areTypeOf :     function(t,a) { a = toArgsArray(a); return !!this.Sum(a.map(function(v){return typeof v === t || v instanceof t;})); }, //returns true if all elements are of a specified type 't'; php function: are_type_of
@@ -197,9 +197,9 @@ var _is = (function(){
     getBase64Img :  function(o,t,h) { var c = document.createElement('canvas'); c.width = o.width; c.height = o.height; /*copy to canvas->*/var cx = c.getContext('2d');cx.drawImage(o,0,0); var ext = (t||this.FileExt(o.src)||'png'); var db64 = c.toDataURL("image/"+ext ); return h ? db64.replace(/^data:image\/[a-z]+;base64,/, '') : db64; },
     //returns Boolean true if the interval-parameter (int [msec]) is greater or equal the passed time since the last call.
     timePassed :    function(i){var n=Date.now, _tlast = n(), _i=i; return function(i){var bdiff = (i||_i) <= (n()-_tlast); _tlast = n(); return bdiff;}; },
-    dbg :           function(){console.log(arguments);}, //common listener function, for dbg
-    get log()       { return _log; },
-    set log()       {  _log.push(arguments[0]); console.log( arguments );  }, //e.g. is.log = 'log this fu bar'
+    dbg :           function(){var c = arguments.callee.caller, cfn = c.name, cargs = c.arguments; console.log(this, cfn, cargs ,'arguments:', arguments); return arguments;}, //common listener template, attached to event handlers for dbg
+    get log()       { for(var i=0; i<_log.length;i++){console.log(i,_log[i]);} return _log; }, //e.g. true === is.log.indexOf('myentry')
+    set log()       {  _log.push(arguments[0]); console.log( arguments );  }, //e.g. is.log = 'log this fu bar'; is.log = 'another log entry'
   };
 })();
 
